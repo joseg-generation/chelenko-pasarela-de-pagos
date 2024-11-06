@@ -1,5 +1,7 @@
+import Transaction from "../../database/model/transaction.model.js";
+
 // Creamos middleware de validacion de datos del cliente:
-const validateDataClient = (req, res, next) => {
+const validateDataClient = async (req, res, next) => {
 
     try {
         // Obtenemos datos desde formulario | sessionId debe ser igual a idGuesT
@@ -14,6 +16,20 @@ const validateDataClient = (req, res, next) => {
             return res.status(400).send('Faltan datos en el formulario');
         } else {
             console.log("Datos recibidos del formulario: BuyOrder:", req.buyOrder, "| sessionId:", req.sessionId, "| amount:", req.amount, "| returnUrl:", req.returnUrl, "| IdGuest:", req.idGuesT);
+
+            // capturar datos y enviarlos a la base de datos antes de continuar
+
+           const newTransaction = await Transaction.create({
+                guest: req.idGuesT,
+                buyOrder: req.buyOrder,
+                sessionId: req.sessionId,
+                amount: req.amount
+            })
+
+            await newTransaction.save();
+
+            console.log("nueva transacción: ", newTransaction);
+            
             next();
         }
 

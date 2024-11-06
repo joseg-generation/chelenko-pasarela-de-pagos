@@ -1,6 +1,16 @@
+
 import main from "./src/Controller/home-controller.js";
-import express from 'express'; // Express | ES6 Modules
-import morgan from 'morgan'; // Morgan | ES6 Modules
+import conn from "./src/database/conexion/conn.mongo.js";
 
 
-main();
+
+(async ()=> {
+    try {
+        await conn()
+    } catch (error) {
+        console.error(error)
+        throw error
+    }
+    main();
+})();
+
